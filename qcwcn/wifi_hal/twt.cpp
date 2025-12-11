@@ -250,15 +250,15 @@ int TwtCommand::handleResponse(WifiEvent &reply)
                 ALOGE("max wake interval attribute is not present");
             }
 
-            ALOGV("TWT caps: %s%s%s%s SP:[min:%d max:%d] SI:[min:%lu max:%lu]",
+            ALOGV("TWT caps: %s%s%s%s SP:[min:%d max:%d] SI:[min:%llu max:%llu]",
                   mTWTCapabilities->is_twt_requester_supported ? "[Requestor]" : "",
                   mTWTCapabilities->is_twt_responder_supported ? "[Responder]" : "",
                   mTWTCapabilities->is_broadcast_twt_supported ? "[Broadcast]" : "",
                   mTWTCapabilities->is_flexible_twt_supported ? "[Flexible]" : "",
                   mTWTCapabilities->min_wake_duration_micros,
                   mTWTCapabilities->max_wake_duration_micros,
-                  mTWTCapabilities->min_wake_interval_micros,
-                  mTWTCapabilities->max_wake_interval_micros);
+                  (unsigned long long)mTWTCapabilities->min_wake_interval_micros,
+                  (unsigned long long)mTWTCapabilities->max_wake_interval_micros);
             break;
         case QCA_WLAN_TWT_GET_STATS:
             struct nlattr *tb1[QCA_WLAN_VENDOR_ATTR_CONFIG_TWT_MAX + 1];
@@ -1037,9 +1037,9 @@ int TwtCommand::handleEvent(WifiEvent &event)
             else
                 ALOGE("TWT: No Callback registered:");
 
-            ALOGV("TWT Response: session_id:%d, SP:%lu, SI:%u %s%s%s%s%s%s%s%s",
+            ALOGV("TWT Response: session_id:%d, SP:%llu, SI:%u %s%s%s%s%s%s%s%s",
                   twt_session.session_id,
-                  twt_session.wake_interval_micros,
+                  (unsigned long long)twt_session.wake_interval_micros,
                   twt_session.wake_duration_micros,
                   twt_session.negotiation_type ? "[Broadcast]" : "[Individual]",
                   twt_session.is_trigger_enabled ? "[Trigger]" : "",
