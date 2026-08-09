@@ -2619,6 +2619,7 @@ void nan_pairing_set_password(struct nan_pairing_peer_info *peer, u8 *passphrase
     struct sae_pt *pt;
     const u8 *pairing_ssid;
     size_t pairing_ssid_len;
+    size_t sae_password_id_len;
 
     if (!peer || !passphrase) {
         ALOGE("%s: peer/passphrase NULL", __FUNCTION__);
@@ -2635,11 +2636,12 @@ void nan_pairing_set_password(struct nan_pairing_peer_info *peer, u8 *passphrase
         ALOGE("%s: Mem Alloc for passphrase failed", __FUNCTION__);
         return;
     }
+    sae_password_id_len = strlen(peer->sae_password_id);
     strlcpy(peer->passphrase, reinterpret_cast<const char *> (passphrase),
             len + 1);
     pt = sae_derive_pt(NULL, pairing_ssid, pairing_ssid_len,
                        (const u8 *)passphrase, len,
-                       peer->sae_password_id);
+                       (const u8 *)peer->sae_password_id, sae_password_id_len);
     pasn_set_pt(peer->pasn, pt);
     /* Set passpharse for Pairing Responder to validate PASN auth1 frame*/
     pasn_set_password(peer->pasn, peer->passphrase);
